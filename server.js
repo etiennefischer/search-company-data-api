@@ -2,9 +2,16 @@ const express = require('express');
 const puppeteer = require('puppeteer');
 const app = express();
 const port = 3000;
+const cors = require('cors');
 
 //Import puppeteer function
 const searchLinkedIn = require('./searchLinkedIn');
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 //Catches requests made to localhost:3000/search
 app.get('/search', (request, response) => {
@@ -17,6 +24,7 @@ app.get('/search', (request, response) => {
 		searchLinkedIn(searchQuery)
 			.then(results => {
 				//Returns a 200 Status OK with Results JSON back to the client.
+				response.set('Access-Control-Allow-Origin', '*');
 				response.status(200);
 				response.json(results);
 			});
