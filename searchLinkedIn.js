@@ -30,7 +30,7 @@ const searchLinkedIn = async (searchQuery) => {
 	dataObj['companyLinkedInNumber'] = await page.$eval('.org-top-card-secondary-content__see-all.t-normal.t-black--light', text => text.textContent.replace(/(\r\n\t|\n|\r|\t)/gm, "").trim());
 
 	await browser.close();
-
+	console.log(dataObj);
 	return dataObj
 };
 
