@@ -11,21 +11,26 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/search', (request, response) => {
+app.get('/search', async (request, response) => {
+	const { searchquery } = request.query;
 
-	const searchQuery = request.query.searchquery;
+  if (!searchquery) {
+    return response.end()
+  }
 
-	if(searchQuery != null) {
+  try {
+    const results = await searchLinkedIn(searchquery)
 
-		searchLinkedIn(searchQuery)
-			.then(results => {
-				response.set('Access-Control-Allow-Origin', '*');
-				response.status(200);
-				response.json(results);
-			});
-	} else {
-		response.end();
-	}
+    response.set('Access-Control-Allow-Origin', '*');
+    response.status(200);
+    response.json(results);
+  } catch (err) {
+      return response
+        .status(500)
+        .json({
+            error: err.message
+        })
+  }
 });
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`));

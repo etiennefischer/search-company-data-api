@@ -25,12 +25,33 @@ const searchLinkedIn = async (searchQuery) => {
 	await page.waitForSelector('.scaffold-layout__main');
 	let dataObj = {};
 	dataObj['companyLogo'] = await page.$eval('.org-top-card-primary-content__logo', img => img.src);
-	dataObj['companyName'] = await page.$eval('h1', text => text.textContent.replace(/(\r\n\t|\n|\r|\t)/gm, "").trim());
-	dataObj['companyEmployeeNumber'] = await page.$eval('.text-body-small.t-black--light.mb1', text => text.textContent.replace(/(\r\n\t|\n|\r|\t)/gm, "").trim());
-	dataObj['companyLinkedInNumber'] = await page.$eval('.org-top-card-secondary-content__see-all.t-normal.t-black--light', text => text.textContent.replace(/(\r\n\t|\n|\r|\t)/gm, "").trim());
+	dataObj['companyName'] = await page.$eval('h1', el => el.innerText.trim());
+  dataObj['companyEmployeeNumber'] = await page.$$eval('dd', elements => {
+		const companyEmployeeNumber = elements.find(el => el.innerText.match(/employees/))
+
+		if (!companyEmployeeNumber) {
+			return null
+		}
+
+		return companyEmployeeNumber.innerText.trim()
+	})
+  dataObj['companyLinkedInNumber'] = await page.$$eval('dd', elements => {
+		const companyLinkedInNumberIndex = elements.find(el => el.innerText.match(/LinkedIn/))
+
+		if (!companyLinkedInNumberIndex) {
+			return null
+		}
+
+		const match = companyLinkedInNumberIndex.innerText.match(/(\d+)/)
+
+		if (!match) {
+			return null
+		}
+
+		return match[0]
+	})
 
 	await browser.close();
-	console.log(dataObj);
 	return dataObj
 };
 
