@@ -40,10 +40,10 @@ PSWD=myPassword
 
 * Headless mode for Puppeteer : 
 
-    In the `searchLinkedIn.js` line 5 you can enable or disable the headless mode
+    In the `src/controllers/searchLinkedInController.js` line 5 you can enable or disable the headless mode
     `headless: false` → show chrome interface
 
-* Testing the Puppeteer script (thanks to Jest) with the `searchLinkedIn.test.js` file :
+* Testing the Puppeteer script (thanks to Jest) with the `src/tests/searchLinkedIn.test.js` file :
 ```
     npm test
 ```
